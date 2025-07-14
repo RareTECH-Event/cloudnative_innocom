@@ -12,10 +12,7 @@ provider "aws" {
   region = "ap-northeast-1" # 東京リージョン
 }
 
-# ECRリポジトリ
-resource "aws_ecr_repository" "app" {
-  name = "flask-chat-app"
-}
+
 
 # ECSクラスター
 resource "aws_ecs_cluster" "main" {
