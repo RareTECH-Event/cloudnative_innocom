@@ -328,3 +328,66 @@ resource "aws_ecs_service" "main" {
 
   depends_on = [aws_lb_listener.http]
 }
+
+# DynamoDB
+resource "aws_dynamodb_table" "users" {
+  name         = "users"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "user_name"
+
+  attribute {
+    name = "user_name"
+    type = "S"
+  }
+}
+
+resource "aws_dynamodb_table" "channels" {
+  name         = "channels"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "channel_id"
+
+  attribute {
+    name = "channel_id"
+    type = "S"
+  }
+}
+
+resource "aws_dynamodb_table" "threads" {
+  name         = "threads"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "thread_id"
+  range_key    = "created_at"
+
+  attribute {
+    name = "thread_id"
+    type = "S"
+  }
+
+  attribute {
+    name = "created_at"
+    type = "S"
+  }
+
+  attribute {
+    name = "channel_id"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name            = "threadsGSI"
+    hash_key        = "channel_id"
+    range_key       = "created_at"
+    projection_type = "ALL"
+  }
+}
+
+resource "aws_dynamodb_table" "sessions" {
+  name         = "sessions"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "session_id"
+
+  attribute {
+    name = "session_id"
+    type = "S"
+  }
+}
