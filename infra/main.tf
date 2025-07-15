@@ -224,3 +224,107 @@ resource "aws_lb_listener" "http" {
     target_group_arn = aws_lb_target_group.main.arn
   }
 }
+
+# IAM Role
+resource "aws_iam_role" "ecs_task_execution" {
+  name = "ecs-task-execution-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
+  role       = aws_iam_role.ecs_task_execution.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role" "ecs_task" {
+  name = "ecs-task-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "ecs_task" {
+  name = "ecs-task-policy"
+  role = aws_iam_role.ecs_task.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "dynamodb:*"
+        ]
+        Effect   = "Allow"
+        Resource = "arn:aws:dynamodb:ap-northeast-1:036844374553:table/*"
+      }
+    ]
+  })
+}
+
+# ECS Task Definition
+resource "aws_ecs_task_definition" "main" {
+  family                   = "main-task"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = aws_iam_role.ecs_task_execution.arn
+  task_role_arn            = aws_iam_role.ecs_task.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = "main-container"
+      image     = var.docker_image_url
+      portMappings = [
+        {
+          containerPort = 5000
+          hostPort      = 5000
+        }
+      ]
+    }
+  ])
+}
+
+# ECS Service
+resource "aws_ecs_service" "main" {
+  name            = "main-service"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.main.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets         = [aws_subnet.private_1a.id, aws_subnet.private_1c.id]
+    security_groups = [aws_security_group.ecs_task.id]
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.main.arn
+    container_name   = "main-container"
+    container_port   = 5000
+  }
+
+  depends_on = [aws_lb_listener.http]
+}
