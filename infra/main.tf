@@ -326,6 +326,12 @@ resource "aws_ecs_task_definition" "main" {
           "awslogs-stream-prefix" = "ecs"
         }
       }
+      environment = [
+        {
+          name  = "ENV"
+          value = "prod"
+        }
+      ]
     }
   ])
 }
