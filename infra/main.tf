@@ -200,7 +200,7 @@ resource "aws_lb" "main" {
 }
 
 resource "aws_lb_target_group" "main" {
-  name_prefix = "main-tg-"
+  name_prefix = "main-"
   port        = 80
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
