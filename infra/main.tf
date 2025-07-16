@@ -12,6 +12,9 @@ provider "aws" {
   region = "ap-northeast-1" # 東京リージョン
 }
 
+data "aws_caller_identity" "current" {}
+
+
 # VPC
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
@@ -282,7 +285,7 @@ resource "aws_iam_role_policy" "ecs_task" {
           "dynamodb:*"
         ]
         Effect   = "Allow"
-        Resource = "arn:aws:dynamodb:ap-northeast-1:036844374553:table/*"
+        Resource = "arn:aws:dynamodb:ap-northeast-1:${data.aws_caller_identity.current.account_id}:table/*"
       }
     ]
   })
