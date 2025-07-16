@@ -11,7 +11,7 @@
           <li class="sliderColumn">
             <a
               href="{{ url_for('channel.channel_detail', channel_id=channel.channel_id) }}"
-              class="flex items-center space-x-2"
+              class="flex items-center space-x-2 block w-full"
             >
               <span>
                 <i class="fas fa-star" style="color: #ffd600"></i>
@@ -33,7 +33,7 @@
           <li class="sliderColumn">
             <a
               href="{{ url_for('channel.channel_detail', channel_id=channel.channel_id) }}"
-              class="flex items-center space-x-2"
+              class="flex items-center space-x-2 block w-full"
             >
               {% if channel.is_private == "true" %}
               <span class="text-base">
@@ -49,8 +49,8 @@
         </div>
 
         {% endfor %}
-        <a href="{{ url_for('channel.channel_register') }}">
-          <li class="mt-6 font-bold">
+        <a href="{{ url_for('channel.channel_register') }}" class="block w-full">
+          <li class="mt-6 font-bold sliderColumn">
             <span class="text-base mr-2">
               <i class="fas fa-plus-square"></i>
             </span>
@@ -63,7 +63,7 @@
       <div class="mb-4">
         <a
           href="{{ url_for('users.users') }}"
-          class="flex items-center sliderColumn"
+          class="flex items-center sliderColumn block"
         >
           <h1>ユーザー一覧</h1>
         </a>
@@ -71,7 +71,7 @@
       <div>
         <a
           href="{{ url_for('thread.favorite_threads') }}"
-          class="flex items-center sliderColumn"
+          class="flex items-center sliderColumn block"
         >
           <h1>お気に入りスレッド</h1>
         </a>

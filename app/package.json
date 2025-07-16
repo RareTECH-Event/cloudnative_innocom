@@ -12,6 +12,7 @@
     "test": "tests"
   },
   "scripts": {
+    "build": "tailwindcss -i ./assets/src/input.css -o ./assets/dist/output.css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
