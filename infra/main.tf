@@ -288,6 +288,16 @@ resource "aws_iam_role_policy" "ecs_task" {
   })
 }
 
+# CloudWatch Log Group
+resource "aws_cloudwatch_log_group" "main" {
+  name              = "/ecs/main-task"
+  retention_in_days = 7
+
+  tags = {
+    Name = "main-log-group"
+  }
+}
+
 # ECS Task Definition
 resource "aws_ecs_task_definition" "main" {
   family                   = "main-task"
@@ -308,6 +318,14 @@ resource "aws_ecs_task_definition" "main" {
           hostPort      = 5000
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.main.name
+          "awslogs-region"        = "ap-northeast-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
     }
   ])
 }
