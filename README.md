@@ -19,7 +19,7 @@
 
 1.  **リポジトリをクローンします。**
     ```bash
-    git@github.com:RareTECH-Event/cloudnative_innocom.git
+    git clone git@github.com:RareTECH-Event/cloudnative_innocom.git
     cd cloudnative-innocom
     ```
 
