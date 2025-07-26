@@ -13,6 +13,7 @@ from src.models.user import User
 from src.models.session import Session
 from helpers.auth import session_required
 import bcrypt
+from werkzeug.security import generate_password_hash
 
 authBp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -65,6 +66,9 @@ def user_register():
             return render_template("register.html")
 
         # passwordをハッシュ化
+        # new_salt = secrets.token_hex(32)
+        # hashed_password = sha256((password + new_salt).encode("UTF-8")).hexdigest() 
+
         hashed_password = password
 
         user = User(
