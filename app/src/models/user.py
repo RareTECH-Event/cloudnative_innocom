@@ -11,7 +11,7 @@ class User:
         self,
         user_name,
         password,
-        profile_image_url,  # Added
+        profile_image_url="",  # Added
         favorite_channels=None,
         favorite_threads=None,
         dynamodb=None,
